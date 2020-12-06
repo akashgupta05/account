@@ -22,7 +22,7 @@ func Connect(url string) error {
 	if err != nil {
 		return err
 	}
-	db.LogMode(false)
+	db.LogMode(true)
 	db.DB().SetMaxIdleConns(5)
 	db.DB().SetMaxOpenConns(5)
 	db.SingularTable(false)
