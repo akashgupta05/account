@@ -25,7 +25,10 @@ func Init(router *httprouter.Router) {
 	})
 
 	accounts := controllers.NewAccountsController()
-	router.POST("/credit", serveEndpoint(accounts.Credit))
+	router.GET("/accounts", serveEndpoint(accounts.AccountInfo))
+	router.POST("/accounts/credit", serveEndpoint(accounts.Credit))
+	router.POST("/accounts/debit", serveEndpoint(accounts.Debit))
+	router.GET("/accounts/credit_activity", serveEndpoint(accounts.CreditActivity))
 }
 
 func serveEndpoint(nextHandler func(rw http.ResponseWriter, r *http.Request)) httprouter.Handle {
@@ -38,9 +41,18 @@ func serveEndpoint(nextHandler func(rw http.ResponseWriter, r *http.Request)) ht
 					"error":   fmt.Sprintf("%v", recvr),
 				}
 				respBuytes, _ := json.Marshal(resp)
+				setCommonHeaders(w)
 				w.Write(respBuytes)
 			}
 		}()
+		setCommonHeaders(w)
 		nextHandler(w, request)
 	}
+}
+
+func setCommonHeaders(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
 }

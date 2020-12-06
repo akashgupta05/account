@@ -10,7 +10,7 @@ import (
 
 const credit = "credit"
 
-// Credit transaction for credit
+// Credit add credits for a user account
 func (ac *AccountsController) Credit(rw http.ResponseWriter, r *http.Request) {
 	bodyBytes, err := readBodyBytes(r)
 	if err != nil {
@@ -30,21 +30,22 @@ func (ac *AccountsController) Credit(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	transaction := &models.Transaction{
-		UserID:   transactionPayload.Payload.UserID,
-		Amount:   transactionPayload.Payload.Amount,
-		Expiry:   transactionPayload.Payload.Expiry,
-		Priority: transactionPayload.Payload.Priority,
-		Type:     transactionPayload.Payload.Type,
+	credit := &models.Credit{
+		UserID:          transactionPayload.Payload.UserID,
+		CreditAmount:    transactionPayload.Payload.Amount,
+		AvailableAmount: transactionPayload.Payload.Amount,
+		Expiry:          transactionPayload.Payload.Expiry,
+		Priority:        transactionPayload.Payload.Priority,
+		Type:            transactionPayload.Payload.Type,
 	}
 
-	err = ac.accountRepo.Credit(transaction)
+	err = ac.accountRepo.Credit(credit)
 	if err != nil {
 		respondWithError(rw, http.StatusBadRequest, err)
 		return
 	}
 
-	respondWithSuccess(rw)
+	respondWithSuccess(rw, &Response{Success: true, Data: credit})
 }
 
 func validateCreditRequest(tp *TransactionPayload) error {

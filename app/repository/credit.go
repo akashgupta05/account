@@ -9,29 +9,36 @@ import (
 )
 
 // Credit for creating transaction of credit type
-func (ar *AccountsRepository) Credit(t *models.Transaction) error {
+func (ar *AccountsRepository) Credit(credit *models.Credit) error {
 	account := &models.Account{}
-	err := ar.Db.Find(account).Where("accounts.user_id = ?", t.UserID).Error
-	if err != nil {
+	if err := ar.Db.Where("accounts.user_id = ?", credit.UserID).Find(account).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			account.UserID = t.UserID
-			account.Balance = t.Amount
+			account.UserID = credit.UserID
+			account.Balance = credit.CreditAmount
 			if err := ar.Db.Create(account).Error; err != nil {
 				return err
 			}
 
-			t.AccountID = account.ID
-			return ar.createTransaction(t)
+			credit.AccountID = account.ID
+			return ar.createCredit(credit)
 		}
 		log.Error("Could not search accounts", err)
 		return errors.New("Failed while searching for user account")
 	}
 
-	t.AccountID = account.ID
-	if err = ar.createTransaction(t); err != nil {
+	credit.AccountID = account.ID
+	if err := ar.createCredit(credit); err != nil {
 		return err
 	}
 
-	account.Balance += t.Amount
+	account.Balance += credit.CreditAmount
 	return ar.updateAccount(account)
+}
+
+func (ar *AccountsRepository) createCredit(t *models.Credit) error {
+	if err := ar.Db.Create(t).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

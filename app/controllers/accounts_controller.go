@@ -28,11 +28,13 @@ type Payload struct {
 	Type     string `json:"type"`
 	Priority int    `json:"priority"`
 	Expiry   int64  `json:"expiry"`
+	Credits  int    `json:"credits"`
 }
 
 type Response struct {
-	Success bool   `json:"success"`
-	Error   string `json:"error,omitempty"`
+	Success bool        `json:"success"`
+	Data    interface{} `json:"data"`
+	Error   string      `json:"error,omitempty"`
 }
 
 func readBodyBytes(r *http.Request) ([]byte, error) {
@@ -59,8 +61,8 @@ func respondWithError(rw http.ResponseWriter, statusCode int, err error) {
 	}
 }
 
-func respondWithSuccess(rw http.ResponseWriter) {
-	responseBytes, err := json.Marshal(Response{Success: true})
+func respondWithSuccess(rw http.ResponseWriter, response *Response) {
+	responseBytes, err := json.Marshal(response)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
