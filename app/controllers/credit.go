@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/akashgupta05/account/app/models"
+	log "github.com/sirupsen/logrus"
 )
 
 const credit = "credit"
@@ -41,6 +42,7 @@ func (ac *AccountsController) Credit(rw http.ResponseWriter, r *http.Request) {
 
 	err = ac.accountRepo.Credit(credit)
 	if err != nil {
+		log.Warnf("Error while making credit transaction : %v", err)
 		respondWithError(rw, http.StatusBadRequest, err)
 		return
 	}

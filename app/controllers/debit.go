@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/akashgupta05/account/app/models"
+	log "github.com/sirupsen/logrus"
 )
 
 const debit = "debit"
@@ -38,6 +39,7 @@ func (ac *AccountsController) Debit(rw http.ResponseWriter, r *http.Request) {
 
 	err = ac.accountRepo.Debit(debit)
 	if err != nil {
+		log.Warnf("Error while making debit transaction : %v", err)
 		respondWithError(rw, http.StatusBadRequest, err)
 		return
 	}

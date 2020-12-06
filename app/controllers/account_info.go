@@ -3,6 +3,8 @@ package controllers
 import (
 	"errors"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var userId = "userId"
@@ -18,6 +20,7 @@ func (ac *AccountsController) AccountInfo(rw http.ResponseWriter, r *http.Reques
 
 	accountInfo, err := ac.accountRepo.AccountInfo(userID)
 	if err != nil {
+		log.Warnf("Error while fetching account info : %v", err)
 		respondWithError(rw, http.StatusBadRequest, err)
 		return
 	}
@@ -39,6 +42,7 @@ func (ac *AccountsController) CreditActivity(rw http.ResponseWriter, r *http.Req
 
 	creditActivity, err := ac.accountRepo.CreditHistory(userID)
 	if err != nil {
+		log.Warnf("Error while fetching credit history : %v", err)
 		respondWithError(rw, http.StatusBadRequest, err)
 		return
 	}
