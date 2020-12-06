@@ -10,7 +10,6 @@ import (
 
 // Debit for creating transaction of debit type
 func (ar *AccountsRepository) Debit(debit *models.Debit) error {
-
 	account := &models.Account{}
 	err := ar.Db.Where("accounts.user_id = ?", debit.UserID).Find(account).Error
 	if err != nil {
