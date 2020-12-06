@@ -1,5 +1,5 @@
 # account
-Account service keep tracks of user account balance. 
+Account service provides implementation of credit and debit for a user account. 
 
 
 ### Steps to up and running
