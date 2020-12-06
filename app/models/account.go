@@ -20,7 +20,7 @@ type Account struct {
 type Credit struct {
 	ID              string    `json:"id" gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	AccountID       string    `json:"account_id" gorm:"not null;column:account_id;default:null"`
-	UserID          string    `json:"user_id" gorm:"-"`
+	UserID          string    `json:"user_id,omitempty" gorm:"-"`
 	Type            string    `json:"type" gorm:"not null;column:type;default:null"`
 	CreditAmount    int64     `json:"credit_amount" gorm:"not null;column:credit_amount;default:null"`
 	AvailableAmount int64     `json:"available_amount" gorm:"not null;column:available_amount;default:null"`
@@ -35,7 +35,7 @@ type Credit struct {
 type Debit struct {
 	ID            string         `json:"id" gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	AccountID     string         `json:"account_id" gorm:"not null;column:account_id;default:null"`
-	UserID        string         `json:"user_id" gorm:"-"`
+	UserID        string         `json:"user_id,omitempty" gorm:"-"`
 	UsedCredits   int            `json:"used_credits" gorm:"not null;column:used_credits;default:0"`
 	UsedCreditIDs pq.StringArray `json:"used_credit_ids" gorm:"not null;column:used_credit_ids;default:{}"`
 	Amount        int64          `json:"amount" gorm:"not null;column:amount;default:null"`

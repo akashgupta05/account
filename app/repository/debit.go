@@ -39,7 +39,8 @@ func (ar *AccountsRepository) Debit(debit *models.Debit) error {
 
 func (ar *AccountsRepository) fetchEligibleCredits(debit *models.Debit) ([]*models.Credit, error) {
 	credits := []*models.Credit{}
-	err := ar.Db.Where("credits.exausted = false and credits.account_id = ?", debit.AccountID).Order("priority desc, expiry").Find(&credits).Error
+	err := ar.Db.Where("credits.exausted = false and extract(epoch from NOW()) <= credits.expiry and credits.account_id = ?", debit.AccountID).
+		Order("priority desc, expiry").Find(&credits).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("no user registered with given user id")
