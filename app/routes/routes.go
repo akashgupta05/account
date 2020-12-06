@@ -12,16 +12,12 @@ import (
 func Init(router *httprouter.Router) {
 	router.GET("/", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		w.Header().Add("Content-Type", "application/json")
-		fmt.Fprint(w, "{ \"message\":\"Hello world!. I am Image Catalog.\",\"success\":true,\"api_version\": 1 }")
-	})
-	router.GET("/elb-check", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-		w.Header().Add("Content-Type", "application/json")
-		fmt.Fprint(w, "{ \"message\":\"Hello world AWS ALB!. I am Image Catalog.\",\"success\":true,\"api_version\": 1 }")
+		fmt.Fprint(w, "{ \"message\":\"Hello world!. I am Account Service.\",\"success\":true }")
 	})
 	router.NotFound = http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header().Add("Content-Type", "application/json")
 		rw.WriteHeader(404)
-		fmt.Fprint(rw, "{ \"message\":\"Not Found.\",\"success\":true,\"api_version\": 1 }")
+		fmt.Fprint(rw, "{ \"message\":\"Not Found.\",\"success\":true }")
 	})
 
 	accounts := controllers.NewAccountsController()
